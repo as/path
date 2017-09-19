@@ -13,7 +13,7 @@
 package path
 
 import "path/filepath"
-import "fmt"
+
 import "os"
 
 // NewPath creates a starting path
@@ -79,7 +79,9 @@ func (t Path) Look(dir string) Path {
 	return Path{Clean(t.base), Clean(t.disp)}
 }
 
+/*
 func main() {
 	fmt.Println(NewPath("."))
 	fmt.Println(Path{`/windows/system32/`, `drivers/etc/`}.Look("../hosts").Look("..").Look("/"))
 }
+*/
