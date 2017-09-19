@@ -22,7 +22,11 @@ func NewPath(path string) (t Path) {
 	if err != nil {
 		panic(err)
 	}
-	wd = Clean(wd)
+	awd, err := filepath.Abs(wd)
+	if err != nil{
+		panic(err)
+	}
+	wd = Clean(awd)
 	if !filepath.IsAbs(path) {
 		t.base = wd
 		t.disp = path
@@ -45,7 +49,7 @@ type Path struct {
 
 // Name returns the display name of the path
 func (t Path) Name() string {
-	log.Printf("name is: %s\n", t.base)
+	log.Printf("name is: %s\n", t.disp)
 	return t.disp
 }
 
@@ -89,15 +93,19 @@ func (t Path) Abs() string {
 func (t Path) Look(dir string) Path {
 	if filepath.IsAbs(dir) {
 		dir = Clean(dir)
-		return Path{DirOf(Clean(dir)), dir}
+		return Path{base: DirOf(Clean(dir)), disp: dir}
+	}
+	if !t.IsDir(){
+		// avoid ls/ls
+		t.disp = DirOf(Clean(t.disp))
 	}
 	t.disp = filepath.Join(t.disp, dir)
 	if s := filepath.Join(t.base, t.disp); len(s) < len(t.base) {
-		t.base = DirOf(Clean(dir))
+		t.base = DirOf(Clean(s))
 		t.disp = s
 	}
-	log.Printf("%s\n", Path{Clean(t.base), Clean(t.disp)})
-	return Path{Clean(t.base), Clean(t.disp)}
+	log.Printf("%#v\n", Path{base: Clean(t.base), disp: Clean(t.disp)})
+	return Path{base: Clean(t.base), disp: Clean(t.disp)}
 }
 
 /*
