@@ -13,7 +13,7 @@
 package path
 
 import "path/filepath"
-
+import "log"
 import "os"
 
 // NewPath creates a starting path
@@ -45,7 +45,25 @@ type Path struct {
 
 // Name returns the display name of the path
 func (t Path) Name() string {
+	log.Printf("name is: %s\n", t.base)
 	return t.disp
+}
+
+// Blank returns a copy of Path without a display name set
+// The path points to the base path
+func (t Path) Blank() Path{
+	t.disp = ""
+	return t
+}
+
+func (t Path) Exists() bool{
+	return Exists(t.Abs())
+}
+
+// Base returns the base path
+func (t Path) Base() string{
+	log.Printf("base is: %s\n", t.base)
+	return t.base
 }
 
 // IsDir returns true if the path is a directory
@@ -56,8 +74,10 @@ func (t Path) IsDir() bool {
 // Path returns an absolute path of the current state.
 func (t Path) Abs() string {
 	if filepath.IsAbs(t.disp) {
+	log.Printf("abs is: %s\n", t.disp)
 		return t.disp
 	}
+	log.Printf("abs is NOT NOT NOT: %s\n", filepath.Join(t.base, t.disp))
 	return filepath.Join(t.base, t.disp)
 }
 
@@ -69,13 +89,14 @@ func (t Path) Abs() string {
 func (t Path) Look(dir string) Path {
 	if filepath.IsAbs(dir) {
 		dir = Clean(dir)
-		return Path{dir, dir}
+		return Path{DirOf(Clean(dir)), dir}
 	}
 	t.disp = filepath.Join(t.disp, dir)
 	if s := filepath.Join(t.base, t.disp); len(s) < len(t.base) {
 		t.base = DirOf(Clean(dir))
 		t.disp = s
 	}
+	log.Printf("%s\n", Path{Clean(t.base), Clean(t.disp)})
 	return Path{Clean(t.base), Clean(t.disp)}
 }
 
