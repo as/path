@@ -3,7 +3,7 @@
 // relative display path that represents a larger absolute path.
 //
 // The primary operation is 'Look', which inspects a third junction
-// to the managed path. The goal of this package is to seperate
+// to the managed path. The goal of this package is to separate
 // the file system specific nature of relative/absolute path and
 // provide a straightforward structure that a text editor can consume.
 //
@@ -23,7 +23,7 @@ func NewPath(path string) (t Path) {
 		panic(err)
 	}
 	awd, err := filepath.Abs(wd)
-	if err != nil{
+	if err != nil {
 		panic(err)
 	}
 	wd = Clean(awd)
@@ -55,17 +55,17 @@ func (t Path) Name() string {
 
 // Blank returns a copy of Path without a display name set
 // The path points to the base path
-func (t Path) Blank() Path{
+func (t Path) Blank() Path {
 	t.disp = ""
 	return t
 }
 
-func (t Path) Exists() bool{
+func (t Path) Exists() bool {
 	return Exists(t.Abs())
 }
 
 // Base returns the base path
-func (t Path) Base() string{
+func (t Path) Base() string {
 	log.Printf("base is: %s\n", t.base)
 	return t.base
 }
@@ -78,7 +78,7 @@ func (t Path) IsDir() bool {
 // Path returns an absolute path of the current state.
 func (t Path) Abs() string {
 	if filepath.IsAbs(t.disp) {
-	log.Printf("abs is: %s\n", t.disp)
+		log.Printf("abs is: %s\n", t.disp)
 		return t.disp
 	}
 	log.Printf("abs is NOT NOT NOT: %s\n", filepath.Join(t.base, t.disp))
@@ -95,7 +95,7 @@ func (t Path) Look(dir string) Path {
 		dir = Clean(dir)
 		return Path{base: DirOf(Clean(dir)), disp: dir}
 	}
-	if !t.IsDir(){
+	if !t.IsDir() {
 		// avoid ls/ls
 		t.disp = DirOf(Clean(t.disp))
 	}

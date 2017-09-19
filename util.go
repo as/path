@@ -6,7 +6,7 @@ import (
 )
 
 // Clean returns a clean path that contains the file
-// seperator if that path ends in a file name.
+// separator if that path ends in a file name.
 func Clean(path string) string {
 	path = filepath.Clean(path)
 	if IsDir(path) {
