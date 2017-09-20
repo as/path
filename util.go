@@ -5,12 +5,18 @@ import (
 	"path/filepath"
 )
 
+var sep = string(filepath.Separator)
+
 // Clean returns a clean path that contains the file
 // separator if that path ends in a file name.
 func Clean(path string) string {
+	return filepath.Clean(path)
 	path = filepath.Clean(path)
 	if IsDir(path) {
-		path = path + string(filepath.Separator)
+		println("not a dir", path)
+		if len(path) > 0 && path[len(path)-1] != filepath.Separator {
+			path += string(filepath.Separator)
+		}
 	}
 	return path
 }
